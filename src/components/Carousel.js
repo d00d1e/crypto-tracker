@@ -5,6 +5,7 @@ import { TrendingCoins } from "../config/api";
 import { CryptoState } from "../context/Context";
 import AliceCarousel from "react-alice-carousel";
 import { Link } from "react-router-dom";
+import { numberWithCommas } from "../config/utils";
 
 const useStyles = makeStyles({
   carousel: {
@@ -36,12 +37,6 @@ export default function Carousel() {
 
     fetchTrendingCoins();
   }, [currency]);
-
-  console.log(trending);
-
-  const numberWithCommas = (x) => {
-    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  };
 
   const items = trending.map((coin) => {
     let profit = coin.price_change_24h >= 0;
