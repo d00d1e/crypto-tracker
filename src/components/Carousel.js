@@ -68,6 +68,12 @@ export default function Carousel() {
       items: 2,
     },
     512: {
+      items: 3,
+    },
+    1024: {
+      items: 4,
+    },
+    2048: {
       items: 5,
     },
   };
