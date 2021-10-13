@@ -19,6 +19,7 @@ import {
 import { CoinList } from "../config/api";
 import { CryptoState } from "../context/Context";
 import { numberWithCommas } from "../config/utils";
+import { Pagination } from "@material-ui/lab";
 
 const useStyles = makeStyles({
   coin: {
@@ -29,15 +30,22 @@ const useStyles = makeStyles({
     },
     fontFamily: "Montserrat",
   },
+  pagination: {
+    "& .MuiPaginationItem-root": {
+      color: "gold",
+    },
+  },
 });
 
 export default function CoinsTable() {
   const classes = useStyles();
   const { currency, symbol } = CryptoState();
   const history = useHistory();
+
   const [coinsList, setCoinsList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
 
   const darkTheme = createTheme({
     palette: {
@@ -107,77 +115,98 @@ export default function CoinsTable() {
                 </TableRow>
               </TableHead>
 
-              {handleSearch().map((coin) => {
-                const profit = coin.price_change_percentage_24h > 0;
+              <TableBody>
+                {handleSearch()
+                  .slice((page - 1) * 10, (page - 1) * 10 + 10)
+                  .map((coin) => {
+                    const profit = coin.price_change_percentage_24h > 0;
 
-                return (
-                  <TableBody>
-                    <TableRow
-                      className={classes.coin}
-                      key={coin.name}
-                      onClick={() => history.push(`/coins/${coin.id}`)}
-                    >
-                      <TableCell component="th" scope="row" align="left">
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 20,
-                            marginBottom: 10,
-                            marginTop: 10,
-                          }}
-                        >
-                          <img src={coin?.image} alt={coin.name} height="50" />
+                    return (
+                      <TableRow
+                        className={classes.coin}
+                        key={coin.name}
+                        onClick={() => history.push(`/coins/${coin.id}`)}
+                      >
+                        <TableCell component="th" scope="row" align="left">
                           <div
                             style={{
                               display: "flex",
-                              flexDirection: "column",
-                              justifyContent: "center",
+                              alignItems: "center",
+                              gap: 20,
+                              marginBottom: 10,
+                              marginTop: 10,
                             }}
                           >
-                            <span
+                            <img
+                              src={coin?.image}
+                              alt={coin.name}
+                              height="50"
+                            />
+                            <div
                               style={{
-                                textTransform: "uppercase",
-                                fontSize: 22,
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "center",
                               }}
                             >
-                              {coin.symbol}
-                            </span>
-                            <span style={{ color: "darkgrey" }}>
-                              {coin.name}
-                            </span>
+                              <span
+                                style={{
+                                  textTransform: "uppercase",
+                                  fontSize: 22,
+                                }}
+                              >
+                                {coin.symbol}
+                              </span>
+                              <span style={{ color: "darkgrey" }}>
+                                {coin.name}
+                              </span>
+                            </div>
                           </div>
-                        </div>
-                      </TableCell>
+                        </TableCell>
 
-                      <TableCell
-                        align="right"
-                        style={{
-                          color: profit ? "rgba(14, 203, 129" : "red",
-                          fontWeight: 500,
-                        }}
-                      >
-                        {profit && "+"}
-                        {coin.price_change_percentage_24h.toFixed(2)}%
-                      </TableCell>
-                      <TableCell align="right">
-                        {symbol}{" "}
-                        {numberWithCommas(coin?.current_price?.toFixed(2))}
-                      </TableCell>
-                      <TableCell align="right">
-                        {symbol}{" "}
-                        {numberWithCommas(
-                          coin.market_cap.toString().slice(0, -6)
-                        )}
-                        M
-                      </TableCell>
-                    </TableRow>
-                  </TableBody>
-                );
-              })}
+                        <TableCell
+                          align="right"
+                          style={{
+                            color: profit ? "rgba(14, 203, 129" : "red",
+                            fontWeight: 500,
+                          }}
+                        >
+                          {profit && "+"}
+                          {coin.price_change_percentage_24h.toFixed(2)}%
+                        </TableCell>
+                        <TableCell align="right">
+                          {symbol}{" "}
+                          {numberWithCommas(coin?.current_price?.toFixed(2))}
+                        </TableCell>
+                        <TableCell align="right">
+                          {symbol}{" "}
+                          {numberWithCommas(
+                            coin.market_cap.toString().slice(0, -6)
+                          )}
+                          M
+                        </TableCell>
+                      </TableRow>
+                    );
+                  })}
+              </TableBody>
             </Table>
           )}
         </TableContainer>
+
+        <Pagination
+          style={{
+            padding: 20,
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
+          }}
+          classes={{ ul: classes.pagination }}
+          count={(handleSearch()?.length / 10).toFixed(0)}
+          onChange={(_, value) => {
+            setPage(value);
+            window.scroll(0, 450);
+          }}
+        />
       </Container>
     </ThemeProvider>
   );
