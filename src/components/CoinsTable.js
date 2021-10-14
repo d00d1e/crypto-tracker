@@ -21,7 +21,7 @@ import { CryptoState } from "../context/Context";
 import { numberWithCommas } from "../config/utils";
 import { Pagination } from "@material-ui/lab";
 
-const useStyles = makeStyles({
+const useStyles = makeStyles(() => ({
   coin: {
     backgroundColor: "#16171a",
     cursor: "pointer",
@@ -35,7 +35,7 @@ const useStyles = makeStyles({
       color: "gold",
     },
   },
-});
+}));
 
 export default function CoinsTable() {
   const classes = useStyles();
