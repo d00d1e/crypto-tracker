@@ -9,6 +9,7 @@ import {
 } from "@material-ui/core";
 import { HistoricChart } from "../config/api";
 import { CryptoState } from "../context/Context";
+import SelectButton from "./SelectButton";
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -113,7 +114,13 @@ export default function CoinDetails({ coin }) {
               }}
             >
               {chartDays.map((day) => (
-                <button key={day.label}>{day.label}</button>
+                <SelectButton
+                  key={day.value}
+                  onClick={() => setDays(day.value)}
+                  selected={day.value === days}
+                >
+                  {day.label}
+                </SelectButton>
               ))}
             </div>
           </>
