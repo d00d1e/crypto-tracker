@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { makeStyles } from "@material-ui/core";
-import { TrendingCoins } from "../config/api";
-import { CryptoState } from "../context/Context";
-import AliceCarousel from "react-alice-carousel";
 import { Link } from "react-router-dom";
+import AliceCarousel from "react-alice-carousel";
+import { makeStyles } from "@material-ui/core";
+import { fetchTrendingCoins } from "../config/api";
+import { CryptoState } from "../context/Context";
 import { numberWithCommas } from "../config/utils";
 
 const useStyles = makeStyles({
@@ -30,12 +29,9 @@ export default function Carousel() {
   const { currency, symbol } = CryptoState();
 
   useEffect(() => {
-    const fetchTrendingCoins = async () => {
-      const { data } = await axios.get(TrendingCoins(currency));
-      setTrending(data);
-    };
-
-    fetchTrendingCoins();
+    fetchTrendingCoins(currency)
+      .then((data) => setTrending(data))
+      .catch((error) => console.log(error));
   }, [currency]);
 
   const items = trending.map((coin) => {

@@ -1,5 +1,5 @@
-import { Container, makeStyles, Typography } from "@material-ui/core";
 import React from "react";
+import { Container, makeStyles, Typography } from "@material-ui/core";
 import Carousel from "./Carousel";
 
 const useStyles = makeStyles(() => ({
@@ -37,7 +37,7 @@ export default function Banner() {
               fontFamily: "Montserrat",
             }}
           >
-            Crypto Tracker
+            Krypto Tracker
           </Typography>
           <Typography
             variant="subtitle2"
@@ -47,7 +47,7 @@ export default function Banner() {
               fontFamily: "Montserrat",
             }}
           >
-            Find and track your favorite crypto currencies
+            Find and track your favorite cryptocurrencies
           </Typography>
         </div>
         <Carousel />

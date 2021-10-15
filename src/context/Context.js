@@ -13,6 +13,9 @@ export const Context = ({ children }) => {
   useEffect(() => {
     if (currency === "USD") setSymbol("$");
     else if (currency === "EUR") setSymbol("€");
+    else if (currency === "CNY") setSymbol("¥");
+    else if (currency === "RUB") setSymbol("₽");
+    else if (currency === "INR") setSymbol("₹");
   }, [currency]);
 
   return (

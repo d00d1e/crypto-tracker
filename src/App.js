@@ -1,10 +1,9 @@
 import { makeStyles } from "@material-ui/core";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
-
-import "./App.css";
 import Header from "./components/Header";
 import Coinpage from "./pages/Coinpage";
 import Homepage from "./pages/Homepage";
+import "./App.css";
 
 const useStyles = makeStyles(() => ({
   App: {

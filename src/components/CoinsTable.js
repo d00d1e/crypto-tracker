@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router";
 import {
@@ -16,10 +15,10 @@ import {
   ThemeProvider,
   Typography,
 } from "@material-ui/core";
-import { CoinList } from "../config/api";
+import { Pagination } from "@material-ui/lab";
+import { fetchCoinList } from "../config/api";
 import { CryptoState } from "../context/Context";
 import { numberWithCommas } from "../config/utils";
-import { Pagination } from "@material-ui/lab";
 
 const useStyles = makeStyles(() => ({
   coin: {
@@ -64,24 +63,19 @@ export default function CoinsTable() {
     );
 
   useEffect(() => {
-    const fetchCoinList = async () => {
-      setLoading(true);
-      const { data } = await axios.get(CoinList(currency));
-      setCoinsList(data);
-      setLoading(false);
-    };
-
-    fetchCoinList();
+    setLoading(true);
+    fetchCoinList(currency)
+      .then((data) => setCoinsList(data))
+      .catch((error) => console.log(error));
+    setLoading(false);
   }, [currency]);
-
-  console.log(coinsList);
 
   return (
     <ThemeProvider theme={darkTheme}>
       <Container style={{ textAlign: "center" }}>
         <Typography
           variant="h4"
-          style={{ margin: 18, fontFamily: "Montserrat" }}
+          style={{ margin: 30, fontFamily: "Montserrat" }}
         >
           Cryptocurreny Prices by Market Cap
         </Typography>
@@ -107,7 +101,7 @@ export default function CoinsTable() {
                         fontWeight: 700,
                         fontFamily: "Montserrat",
                       }}
-                      align={head === "Coin" ? "" : "right"}
+                      align={head === "Coin" ? "left" : "right"}
                     >
                       {head}
                     </TableCell>
@@ -201,7 +195,7 @@ export default function CoinsTable() {
             justifyContent: "center",
           }}
           classes={{ ul: classes.pagination }}
-          count={(handleSearch()?.length / 10).toFixed(0)}
+          count={Number((handleSearch()?.length / 10).toFixed(0))}
           onChange={(_, value) => {
             setPage(value);
             window.scroll(0, 450);

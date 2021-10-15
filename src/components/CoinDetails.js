@@ -1,4 +1,3 @@
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Line } from "react-chartjs-2";
 import {
@@ -7,7 +6,7 @@ import {
   makeStyles,
   ThemeProvider,
 } from "@material-ui/core";
-import { HistoricChart } from "../config/api";
+import { fetchMarketData } from "../config/api";
 import { CryptoState } from "../context/Context";
 import SelectButton from "./SelectButton";
 
@@ -30,7 +29,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function CoinDetails({ coin }) {
-  const [historicData, setHistoricData] = useState();
+  const [marketData, setMarketData] = useState();
   const [days, setDays] = useState(1);
   const { currency } = CryptoState();
   const classes = useStyles();
@@ -63,24 +62,21 @@ export default function CoinDetails({ coin }) {
   ];
 
   useEffect(() => {
-    const fetchHistoricData = async () => {
-      const { data } = await axios.get(HistoricChart(coin.id, days, currency));
-      setHistoricData(data.prices);
-    };
-
-    fetchHistoricData();
-  }, [currency, days]);
+    fetchMarketData(coin.id, days, currency)
+      .then((data) => setMarketData(data.prices))
+      .catch((error) => console.log(error));
+  }, [coin.id, currency, days]);
 
   return (
     <ThemeProvider theme={darkTheme}>
       <div className={classes.container}>
-        {!historicData ? (
-          <CircularProgress style={{ color: "cold" }} size={25} thickness={1} />
+        {!marketData ? (
+          <CircularProgress style={{ color: "cold" }} size={35} thickness={2} />
         ) : (
           <>
             <Line
               data={{
-                labels: historicData.map((coin) => {
+                labels: marketData.map((coin) => {
                   let date = new Date(coin[0]);
                   let time =
                     date.getHours() > 12
@@ -90,8 +86,8 @@ export default function CoinDetails({ coin }) {
                 }),
                 datasets: [
                   {
-                    data: historicData.map((history) => history[1]),
-                    label: `Price (Past ${days} Days) in ${currency}`,
+                    data: marketData.map((history) => history[1]),
+                    label: ` Price ( Past ${days} Day(s) ) in ${currency}`,
                     borderColor: "gold",
                   },
                 ],
@@ -108,7 +104,7 @@ export default function CoinDetails({ coin }) {
             <div
               style={{
                 display: "flex",
-                marginTop: 20,
+                marginTop: 60,
                 justifyContent: "space-around",
                 width: "100%",
               }}

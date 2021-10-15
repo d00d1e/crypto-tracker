@@ -47,7 +47,7 @@ export default function Header() {
               variant="h6"
               onClick={() => history.push("/")}
             >
-              Crypto Tracker
+              Krypto
             </Typography>
             <Select
               variant="outlined"
@@ -57,6 +57,9 @@ export default function Header() {
             >
               <MenuItem value={"USD"}>USD</MenuItem>
               <MenuItem value={"EUR"}>EUR</MenuItem>
+              <MenuItem value={"CNY"}>CNY</MenuItem>
+              <MenuItem value={"RUB"}>RUB</MenuItem>
+              <MenuItem value={"INR"}>INR</MenuItem>
             </Select>
           </Toolbar>
         </Container>

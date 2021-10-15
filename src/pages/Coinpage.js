@@ -1,16 +1,16 @@
-import { LinearProgress, makeStyles, Typography } from "@material-ui/core";
-import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import ReactHtmlParser from "react-html-parser";
+import { LinearProgress, makeStyles, Typography } from "@material-ui/core";
 import CoinDetails from "../components/CoinDetails";
-import { SingleCoin } from "../config/api";
+import { fetchSingleCoin } from "../config/api";
 import { CryptoState } from "../context/Context";
 import { numberWithCommas } from "../config/utils";
 
 const useStyles = makeStyles((theme) => ({
   container: {
     display: "flex",
+    marginTop: 40,
     [theme.breakpoints.down("md")]: {
       flexDirection: "column",
       alignItems: "center",
@@ -21,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
     alignItems: "center",
-    marginTop: 25,
+    marginTop: 30,
     borderRight: "2px solid grey",
     [theme.breakpoints.down("md")]: {
       width: "100%",
@@ -30,21 +30,25 @@ const useStyles = makeStyles((theme) => ({
   },
   heading: {
     fontWeight: "bold",
-    marginBottom: 20,
+    marginBottom: 5,
     fontFamily: "Montserrat",
+  },
+  subHeading: {
+    textTransform: "uppercase",
+    marginBottom: 30,
   },
   description: {
     width: "100%",
     fontFamily: "Montserrat",
-    padding: 25,
+    padding: 50,
     paddingBottom: 15,
     paddingTop: 0,
     textAlign: "justify",
   },
   marketData: {
     alignSelf: "start",
-    padding: 25,
-    paddingTop: 10,
+    padding: 50,
+    paddingTop: 15,
     width: "100%",
     [theme.breakpoints.down("md")]: {
       display: "flex",
@@ -69,20 +73,16 @@ export default function Coinpage() {
   const [coin, setCoin] = useState();
 
   useEffect(() => {
-    const fetchSingleCoin = async () => {
-      const { data } = await axios.get(SingleCoin(id));
-      setCoin(data);
-    };
-
-    fetchSingleCoin();
+    fetchSingleCoin(id)
+      .then((data) => setCoin(data))
+      .catch((error) => console.log(error));
   }, [id]);
-
-  console.log(coin);
 
   if (!coin) return <LinearProgress style={{ backgroundColor: "gold" }} />;
 
   return (
     <div className={classes.container}>
+      {/* SIDEBAR */}
       <div className={classes.sidebar}>
         <img
           src={coin?.image?.large}
@@ -92,6 +92,9 @@ export default function Coinpage() {
         />
         <Typography variant="h3" className={classes.heading}>
           {coin?.name}
+        </Typography>
+        <Typography variant="h4" className={classes.subHeading}>
+          ({coin?.symbol})
         </Typography>
         <Typography variant="subtitle1" className={classes.description}>
           {ReactHtmlParser(coin?.description.en.split(". ")[0])}.
@@ -136,6 +139,7 @@ export default function Coinpage() {
         </div>
       </div>
 
+      {/* CHART */}
       <CoinDetails coin={coin} />
     </div>
   );
