@@ -17,7 +17,7 @@ function App() {
   const classes = useStyles();
 
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/krypto-tracker">
       <div className={classes.App}>
         <Header />
         <Switch>
